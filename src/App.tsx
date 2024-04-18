@@ -10,7 +10,7 @@ function App() {
   console.log(data);
 
   return (
-    <div className="w-full min-h-screen">
+    <div className="w-full min-h-screen bg-[#131f22]">
       {data && <DataView data={data} />}
     </div>
   );
