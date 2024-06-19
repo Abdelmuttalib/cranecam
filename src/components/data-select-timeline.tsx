@@ -19,9 +19,11 @@ export function DateTimeline({
           const selected = selectedDate.date === date;
 
           return (
-            <div className="w-full justify-center items-center flex flex-col">
+            <div
+              key={date}
+              className="w-full justify-center items-center flex flex-col"
+            >
               <button
-                key={date}
                 className="flex -mb-1 z-10 flex-col w-fit items-center text-sm"
                 onClick={() => handleDateChange(dateObj)}
               >
