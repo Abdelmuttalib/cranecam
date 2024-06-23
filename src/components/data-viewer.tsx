@@ -1,61 +1,67 @@
 import { PotreeDate } from "@/types";
 import { DateTimeline } from "./data-select-timeline";
-import { useEffect, useState } from "react";
-import PointcloudNavigator from "./potree-viewer";
+import { RenderViewProvider } from "@/context/render-view";
+import { Viewer } from "./viewer";
+import { CalendarIcon, ChevronRight } from "lucide-react";
+import { ShareDialog } from "./share-dialog";
+import { useRenderView } from "@/hooks/use-render-view";
+import { formatDate } from "@/lib/date";
 
-function organizeData(data: PotreeDate) {
-  const d = data.resultTest.flatMap((r) => {
-    return Object.entries(r).map(([key, value]) => {
-      return { date: key, link: value };
-    });
-  });
-
-  return d;
-}
-
-interface DataShowcaseProps {
+type DataViewProps = {
   data: PotreeDate;
 }
 
-export default function DataView({ data }: DataShowcaseProps) {
-  const d = organizeData(data);
+export default function DataView({ data }: DataViewProps) {
+  return (
+    <RenderViewProvider data={data}>
+      <div className="relative w-full h-full min-h-screen flex flex-col">
+        <div className="w-full bg-zinc-950 text-gray-100 font-semibold flex flex-col items-center justify-center">
+          <Navbar />
+          <DateTimeline />
+        </div>
+        <Viewer />
+      </div>
+    </RenderViewProvider>
+  );
+}
 
-  const [selectedDate, setSelectedDate] = useState(d[0]);
-
-  const handleDateChange = (date: { date: string; link: string }) => {
-    setSelectedDate(date);
-  };
-
-  useEffect(() => {
-    if (window && window.viewer) {
-      console.log("window: ", window.viewer);
-    }
-  }, []);
+function Navbar() {
+  const { selectedDate } = useRenderView();
 
   return (
-    <div className="w-full h-full min-h-screen flex flex-col">
-       <div className="w-full bg-zinc-950 text-gray-100 font-semibold flex items-center justify-center">
-        <DateTimeline
-          data={d}
-          handleDateChange={handleDateChange}
-          selectedDate={selectedDate}
-        />
-      </div> 
-      <div className="w-full h-full flex-grow relative">
-      <div className="absolute top-0 right-0 bottom-0 w-80 h-full bg-zinc-800/80 z-50 flex justify-center items-center">
-        <div className="flex w-full max-w-72 text-center flex-col items-center gap-4 text-white -mt-20">
-          {/* <MousePointer className="w-10 h-10 text-white" /> */}
-          <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-mouse-pointer rotate-12"><path d="m3 3 7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><path d="m13 13 6 6"/></svg>
-          <p className="text-sm">Select an object to view its properties or modify it.</p>
+    <div className="w-full bg-zinc-900/90 flex items-center px-4 h-14">
+      <div className="text-sm flex items-center gap-x-4 w-full h-full">
+        <div className="flex items-center gap-x-1">
+          <img
+            src="/favicon.ico"
+            width={35}
+            height={35}
+            className="object-contain"
+          />
+          {/* <h1 className="font-extralight uppercase pb-0.5">
+            CraneCam<span className="font-medium lowercase">cloud</span>
+          </h1> */}
+        </div>
+        <div className="h-8 bg-zinc-800 w-0.5"></div>
+        <div className="h-full flex items-center gap-x-1.5">
+          <p>Construction site</p>
+          <ChevronRight className="w-5" />
+          <p className="font-normal inline-flex items-center gap-x-2">
+            <span>
+              <CalendarIcon className="w-4" />
+            </span>
+            {formatDate(selectedDate.date)}{" "}
+          </p>
         </div>
       </div>
-        <PointcloudNavigator pointCloudUrl={selectedDate.link} />
-        {/* <iframe
-          key={selectedDate.link}
-          title="iframe"
-          src={selectedDate.link}
-          className="w-full h-main"
-        ></iframe> */}
+      <div className="flex items-center">
+        <ShareDialog />
+        {/* <Button>
+        <span className="flex items-center gap-x-2">
+          <Share2 className="w-[17px]" />
+          <span>Share</span>
+        </span>
+      </Button> */}
       </div>
     </div>
   );

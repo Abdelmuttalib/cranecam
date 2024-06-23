@@ -65,8 +65,9 @@
     --radius: 0.5rem;
   }
 
+  /* 96 + 56 = 152 */
   .h-main {
-    @apply h-[calc(100vh-96px)];
+    @apply h-[calc(100vh-152px)];
   }
 
   /* .dark {

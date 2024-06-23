@@ -1,7 +1,6 @@
 import useSWR from "swr";
 import { apiPaths, getPotreeDate } from "./lib/api";
 import DataView from "./components/data-viewer";
-import PointcloudNavigator from "./components/potree-viewer";
 
 // #242424
 // #131f22

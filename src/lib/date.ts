@@ -58,3 +58,47 @@ export function getDateMonth(inputDate: string) {
 
   return formattedDate;
 }
+
+// format full date with time, no seconds
+export function formatDate(date: string){
+  const dateObj = new Date(date);
+  // const options = {
+  //   year: "numeric",
+  //   month: "long",
+  //   day: "numeric",
+  //   hour: "numeric",
+  //   minute: "numeric",
+  // };
+
+  return dateObj.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  });
+}
+
+// export function formatDateShortWithoutYear(date: string) {
+//   const dateObj = new Date(date);
+
+//   return dateObj.toLocaleDateString("en-US", {
+//     day: "numeric",
+//     month: "short",
+//   });
+// }
+
+export function formatDateShortWithoutYear(date: string) {
+  const dateObj = new Date(date);
+
+  // Get the month abbreviation (e.g., "Sep")
+  const month = dateObj.toLocaleDateString("en-US", {
+    month: "long",
+  });
+
+  // Get the day of the month (e.g., "13")
+  const day = dateObj.getDate();
+
+  // Combine the month abbreviation and day
+  return `${day} ${month}`;
+}
