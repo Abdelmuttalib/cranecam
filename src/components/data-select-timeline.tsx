@@ -3,6 +3,8 @@ import { cn } from "@/lib/utils";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { useRenderView } from "@/hooks/use-render-view";
 import { DateField } from "@/types";
+import { Button } from "./ui/button";
+import { CompareIcon } from "./icons";
 
 
 type ACC = {
@@ -140,15 +142,16 @@ export function DateTimeline() {
           );
         })} */}
       </div>
-      {/* <div className="flex justify-center border-t border-l border-zinc-700 items-center px-3 bg-zinc-900">
+      <div className="flex justify-center border-t border-l border-zinc-700 items-center px-3 bg-zinc-900">
         <Button
-          onClick={onCompare}
+          // onClick={onCompare}
           className="rounded-full bg-blue-500 space-x-1"
         >
           <CompareIcon className="w-5 h-5" />
           <span>Compare</span>
         </Button>
-      </div> */}
+      </div>
     </div>
   );
 }
+

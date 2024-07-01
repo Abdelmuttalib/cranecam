@@ -12,7 +12,10 @@ export function Viewer() {
           <PointcloudNavigator pointCloudUrl={selectedDate.link} disableActions={compareMode} />
         </div>
       ) : (
-        <PointcloudNavigator pointCloudUrl={selectedDate.link} disableActions={compareMode} />
+        <>
+       
+          <PointcloudNavigator pointCloudUrl={selectedDate.link} disableActions={compareMode} />
+        </>
       )}
 
       {/* right sidebar */}
