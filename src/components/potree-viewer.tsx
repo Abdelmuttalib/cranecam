@@ -7,6 +7,7 @@ import { useEffect, useRef } from "react";
 import { Button } from "./ui/button";
 import { Camera, MousePointer, ZoomIn, ZoomOut } from "lucide-react";
 import { Input } from "./ui/input";
+import { IFCLoader } from '../../public/libs/three.js/extra/IFCLoader.js'; // Adjust path as needed
 
 type PointcloudNavigatorProps = {
   pointCloudUrl: string;
@@ -26,13 +27,10 @@ export default function PointcloudNavigator({
   const viewerRef = useRef(null);
   const orbitControlsRef = useRef(null);
 
-  // const [pointCloudUrl, setPointcloudUrl] = useState(
-  //   pointCloudUrl
-  //   // "http://47.97.51.98:6093/temp/2024-02-25/J72304752/perugia/pointclouds/perugia/metadata.json"
-  // );
-
   useEffect(() => {
     // initialize Potree viewer
+    console.log('viewerElem', viewerElem);
+
     const viewerElem = potreeContainerDiv.current;
 
     const viewer = new Potree.Viewer(viewerElem);
@@ -77,127 +75,87 @@ export default function PointcloudNavigator({
       saveAnnotation(annotation);
     };
 
-    // // Example usage of addAnnotation
-    // // addAnnotation(new THREE.Vector3(1, 2, 3), "Example Title", "Example Description");
-
-    // // Function to save annotation
-    // const saveAnnotation = (annotation) => {
-    //   const savedAnnotations = JSON.parse(
-    //     localStorage.getItem("annotations") || "[]"
-    //   );
-    //   savedAnnotations.push({
-    //     title: annotation.title,
-    //     description: annotation.description,
-    //     position: annotation.position.toArray(),
-    //     cameraPosition: annotation.cameraPosition.toArray(),
-    //     cameraTarget: annotation.cameraTarget.toArray(),
-    //   });
-    //   localStorage.setItem("annotations", JSON.stringify(savedAnnotations));
-    // };
-
-    // // Load saved annotations
-    // const loadAnnotations = () => {
-    //   const savedAnnotations = JSON.parse(
-    //     localStorage.getItem("annotations") || "[]"
-    //   );
-    //   savedAnnotations.forEach((ann) => {
-    //     const annotation = new Potree.Annotation({
-    //       position: new THREE.Vector3().fromArray(ann.position),
-    //       title: ann.title,
-    //       description: ann.description,
-    //       cameraPosition: new THREE.Vector3().fromArray(ann.cameraPosition),
-    //       cameraTarget: new THREE.Vector3().fromArray(ann.cameraTarget),
-    //     });
-    //     viewer.scene.annotations.add(annotation);
-    //   });
-    // };
-
-    // loadAnnotations();
-
-    // viewer.setControls(viewer.orbitControls);
 
     console.log({ viewer });
 
     viewer.loadGUI(() => {
       viewer.setLanguage("en");
-      // if (menuAppearance && menuAppearance.nextElementSibling) {
-      //   menuAppearance.nextElementSibling.style.display = "block";
-      // }
-      // document.getElementById("menu_appearance").next().show();
-      // document.getElementById("menu_tools").next().show();
-      // document.getElementById("menu_clipping").next().show();
-
-      // const menuAppearance = document.getElementById("menu_appearance");
-      // const menuTools = document.getElementById("menu_tools");
-      // const menuClipping = document.getElementById("menu_clipping");
-
-      // if (menuAppearance && menuAppearance.nextElementSibling) {
-      //   menuAppearance.nextElementSibling.style.display = "block";
-      //   // z-index
-      //   menuAppearance.nextElementSibling.style.zIndex = "1000";
-      //   // width & height
-      //   menuAppearance.nextElementSibling.style.width = "300px";
-      //   menuAppearance.nextElementSibling.style.height = "auto";
-      // }
-
-      // if (menuTools && menuTools.nextElementSibling) {
-      //   menuTools.nextElementSibling.style.display = "block";
-      // }
-
-      // if (menuClipping && menuClipping.nextElementSibling) {
-      //   menuClipping.nextElementSibling.style.display = "block";
-      // }
-
-      // console.log("menuAppearance: ", menuAppearance, menuAppearance.nextElementSibling);
-      // console.log("menuTools: ", menuTools);
-      // console.log("menuClipping: ", menuClipping);
 
       viewer.toggleSidebar();
     });
 
+    let relevantPosition = {};
+
     // Load and add point cloud to scene
     // const url = pointCloudUrl;
     // "https://raw.githubusercontent.com/potree/potree/develop/pointclouds/lion_takanawa/cloud.js";
-    /* ***PUT YOUR POINTCLOUD URL*** HERE */
-    Potree.loadPointCloud(pointCloudUrl).then(
-      (e) => {
-        // const scene = viewer.scene;
-        const pointcloud = e.pointcloud;
-        const material = pointcloud.material;
+    // Potree.loadPointCloud(pointCloudUrl).then(
+    //   (e) => {
+    //     // const scene = viewer.scene;
+    //     const pointcloud = e.pointcloud;
+    //     const material = pointcloud.material;
+    //     console.log("Material: ", pointcloud);
 
-        material.activeAttributeName = "rgba";
-        material.minSize = 2;
-        material.pointSizeType = Potree.PointSizeType.FIXED;
+    //     material.activeAttributeName = "rgba";
+    //     material.minSize = 2;
+    //     material.pointSizeType = Potree.PointSizeType.FIXED;
 
-        viewer.scene.addPointCloud(pointcloud);
-        viewer.fitToScreen();
-        // addMeasurementTool(viewer);
+    //     viewer.scene.addPointCloud(pointcloud);
+    //     console.log("viewer scene: ", viewer.scene);
+    //     if (viewer.scene.pointclouds?.[0]?.position) {
+    //       relevantPosition = viewer.scene.pointclouds?.[0]?.position;
+    //     }
 
-        // console.log("This is the url", pointCloudUrl);
-      },
-      (e) => console.err("ERROR: ", e)
-    );
+    //     viewer.fitToScreen();
+    //     // addMeasurementTool(viewer);
 
-    // const addMeasurementTool = (viewer) => {
-    //   const measure = new Potree.Measure();
-    //   measure.showDistances = true;
-    //   measure.showCoordinates = true;
-    //   measure.showAngles = true;
-    //   measure.showArea = true;
-    //   measure.showHeight = true;
-    //   viewer.scene.addMeasurement(measure);
+    //     // console.log("This is the url", pointCloudUrl);
+    //   },
+    //   (e) => console.err("ERROR: ", e)
+    // );
 
-    //   viewer.scene.addEventListener('measurement_added', (event) => {
-    //     const measurement = event.measurement;
-    //     console.log('Measurement added:', measurement);
-    //   });
+    const ifcModelPath = '../../public/Project1.ifc';
+    const ifcLoader = new IFCLoader();
+    // ifcLoader.ifcManager.setWasmPath('./libs/three.js/extra/ifc/');
+    ifcLoader.ifcManager.setWasmPath('../../public/libs/three.js/extra/ifc/');
+    ifcLoader.load(ifcModelPath, function (model) {
+      console.log("model: ", model);
+      // const pointCloud = viewer.scene.pointclouds[0]; // Adjust as per your viewer setup
+      // const pointCloudBoundingBox = pointCloud.pcoGeometry.tightBoundingBox;
 
-    //   // Adding initial measurements (optional)
-    //   const pointA = new THREE.Vector3(0, 0, 0);
-    //   const pointB = new THREE.Vector3(10, 0, 0);
-    //   measure.addMarker(pointA);
-    //   measure.addMarker(pointB);
-    // };
+      // Calculate the center of the point cloud bounding box
+      // const pointCloudCenter = pointCloudBoundingBox.getCenter(new THREE.Vector3());
+
+      // Set the position of the IFC model relative to the point cloud
+      // ifcModel.mesh.position.copy(pointCloudCenter);
+      // ifcModel.mesh.position.x += pointCloudBoundingBox.max.x - pointCloudCenter.x + 1; // Example offset adjustment
+      // model.position = { x: 100, y: 100, z: 100, isVector: false };
+      // model.mesh.rotateX(Math.PI * 0.5);
+      // model.scale.multiplyScalar(0.3048);
+      // scene.add(model.mesh);
+      console.log("S", viewer.scene);
+      // viewer.scene.add(model.mesh);
+      // viewer.scene.scene.add(model.mesh);
+    });
+
+    // const ifcLoader = new IFCLoader();
+    // ifcLoader.ifcManager.setWasmPath('./libs/three.js/extra/ifc/');
+    // ifcLoader.load('./Project1.ifc', function (model) {
+    //   console.log("model: ", model);
+    //   const pointCloud = viewer.scene.pointclouds[0]; // Adjust as per your viewer setup
+    //   const pointCloudBoundingBox = pointCloud.pcoGeometry.tightBoundingBox;
+
+    //   // Calculate the center of the point cloud bounding box
+    //   const pointCloudCenter = pointCloudBoundingBox.getCenter(new THREE.Vector3());
+
+    //   // Set the position of the IFC model relative to the point cloud
+    //   ifcModel.mesh.position.copy(pointCloudCenter);
+    //   ifcModel.mesh.position.x += pointCloudBoundingBox.max.x - pointCloudCenter.x + 1; // Example offset adjustment
+    //   // model.position = { x: 100, y: 100, z: 100, isVector: false };
+    //   model.mesh.rotateX(Math.PI * 0.5);
+    //   // model.scale.multiplyScalar(0.3048);
+    //   scene.add(model.mesh);
+    // });
 
     const camera = viewer.scene.getActiveCamera();
     const renderer = viewer.renderer;
@@ -205,36 +163,12 @@ export default function PointcloudNavigator({
     orbitControlsRef.current = orbitControls; // Save orbitControls to ref for later use
 
     function addMarker(position, radius) {
-      // const geometry = new THREE.CircleGeometry(radius, 32);
-      //           const geometry = `<div style="color: white;
-      //           background-color: black;
-      //           opacity: 0.5;
-      //           border-radius: 1.5em;
-      //           font-size: 1em;
-      //           line-height: 1.5em;
-      //           padding: 1px 8px 0px 8px;
-      //           font-weight: bold;
-      //           display: flex;
-      //           cursor: default;">
-      // </div>`;
-      //           const material = new THREE.MeshBasicMaterial({ color: 0xffff00 }); // Yellow color
-      //           const marker = new THREE.Mesh(geometry, material);
       const geometry = new THREE.SphereGeometry(1, 32, 16);
       const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
       const marker = new THREE.Mesh(geometry, material);
       // scene.add(sphere);
       marker.position.copy(position);
 
-      // marker.addEventListener('click', (e) => {
-      //   // Perform actions when the marker is clicked
-      //   console.log('Marker clicked!', position, e);
-      //   // Add your custom actions here
-      // });
-      // Register a click event for the marker
-      // marker.callback = (e) => {
-      //   console.log('Marker clicked!', position, e);
-      //   // Add your custom actions here
-      // };
       marker.userData.onClick = (e) => {
         console.log("Marker clicked!", position, e);
         // Add your custom actions here
@@ -245,44 +179,7 @@ export default function PointcloudNavigator({
         //     coord.y === position.y &&
         //     coord.z === position.z
         // );
-
-        // console.log('clickedMarkerData: ', clickedMarkerData);
-
-        // if (clickedMarkerData) {
-        //   const img = clickedMarkerData.imageName.replace('.jpg', '');
-        //   const defectData = annotationsDefectsData[img];
-        // }
       };
-
-      // // Add event listeners for mouseenter and mouseleave events
-      // marker.addEventListener('mouseenter', () => {
-      //   console.log('Marker hovered!', position);
-      //   // Add your custom actions here for mouse enter
-      // });
-
-      // marker.addEventListener('mouseleave', () => {
-      //   console.log('Marker unhovered!', position);
-      //   // Add your custom actions here for mouse leave
-      // });
-
-      // Register hover events for the marker
-      marker.addEventListener("mouseover", () => {
-        // console.log('Marker hovered!', position);
-        // Add your custom actions here for mouse enter
-        // setShow(true);
-        // const clickedMarkerData = coordinatesData.find(
-        //   (coord) =>
-        //     coord.x === position.x &&
-        //     coord.y === position.y &&
-        //     coord.z === position.z
-        // );
-        // console.log('clickedMarkerData: ', clickedMarkerData);
-        // if (clickedMarkerData) {
-        //   const img = clickedMarkerData.imageName.replace('.jpg', '');
-        //   const defectData = annotationsDefectsData[img];
-        //   setMarkerData(defectData);
-        // }
-      });
 
       marker.addEventListener("mouseleave", () => {
         console.log("Marker unhovered!", position);
@@ -313,6 +210,7 @@ export default function PointcloudNavigator({
       const raycaster = new THREE.Raycaster();
       raycaster.setFromCamera(mouse, viewer.scene.getActiveCamera());
 
+
       const intersects = raycaster.intersectObjects(
         viewer.scene.scene.children,
         true
@@ -323,42 +221,21 @@ export default function PointcloudNavigator({
         addMarker(intersect.point, 1);
       }
 
-      // for (let i = 0; i < intersects.length; i++) {
-      //   const object = intersects[i].object;
-      //   if (object.userData.onClick) {
-      //     object.userData.onClick();
-      //     break;
-      //   }
-      // }
+
+      // viewer.renderer.domElement.addEventListener("click", onClick, false);
+
+      return () => {
+        // Cleanup
+        // viewer.removeEventListener("click", handleClick);
+        console.log("Disposing viewer:", viewer);
+        if (viewer && typeof viewer.dispose === "function") {
+          viewer.dispose();
+        } else {
+          console.error("Viewer dispose method not found or viewer is null");
+        }
+      };
     }
 
-    //     You'll need to add a click listener to viewer.renderer.domElement and then do a raycast to viewer.scene.scene (scene: potree scene, scene.scene: the threejs scene in a potree scene) to check whether a mesh has been hit.
-
-    // Please refer to the three.js examples to see how to do this: https://threejs.org/examples/?q=raycast
-
-    // Attach click event listener to the document
-    // document.addEventListener('click', onClick, false);
-
-    viewer.renderer.domElement.addEventListener("click", onClick, false);
-
-    return () => {
-      // Cleanup
-      // viewer.removeEventListener("click", handleClick);
-      console.log("Disposing viewer:", viewer);
-      if (viewer && typeof viewer.dispose === "function") {
-        viewer.dispose();
-      } else {
-        console.error("Viewer dispose method not found or viewer is null");
-      }
-      // viewer.dispose();
-      // while (viewerElem.firstChild) {
-      //   viewerElem.removeChild(viewerElem.firstChild);
-      // }
-    };
-    // return () => {
-    //   // cleanup
-    //   viewer.dispose();
-    // };
   }, [pointCloudUrl]);
 
   // Function to capture and download screenshot
@@ -376,48 +253,6 @@ export default function PointcloudNavigator({
       link.click();
     }
   }
-
-  // // Function to zoom in
-  // function zoomIn() {
-  //   const viewer = potreeContainerDiv.current;
-  //   if (viewer) {
-  //     const camera = viewer.scene.getActiveCamera();
-  //     console.log("camera: ", camera)
-  //     camera.zoomIn();
-  //     viewer.setFOV(camera.fov / 1.1);
-  //   }
-  // }
-
-  // // Function to zoom out
-  // function zoomOut(){
-  //   const viewer = potreeContainerDiv.current;
-  //   if (viewer) {
-  //     const camera = viewer.scene.getActiveCamera();
-  //     console.log("camera: ", camera)
-  //     camera.zoomOut();
-  //     viewer.setFOV(camera.fov * 1.1);
-  //   }
-  // };
-
-  // // Function to zoom in
-  // const zoomIn = () => {
-  //   const orbitControls = orbitControlsRef.current;
-  //   console.log("dd: ", orbitControls);
-  //   if (orbitControls) {
-  //     orbitControls.dollyIn(0.95);
-  //     orbitControls.update();
-  //   }
-  // };
-
-  // // Function to zoom out
-  // const zoomOut = () => {
-  //   const orbitControls = orbitControlsRef.current;
-  //   console.log("dd: ", orbitControls);
-  //   if (orbitControls) {
-  //     orbitControls.dollyOut(0.95);
-  //     orbitControls.update();
-  //   }
-  // };
 
   // Function to zoom in
   function zoomIn() {
