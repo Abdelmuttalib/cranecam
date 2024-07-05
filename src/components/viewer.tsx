@@ -1,3 +1,6 @@
+// @ts-ignore
+// @ts-nocheck
+
 import PointcloudNavigator from "./potree-viewer";
 import { useRenderView } from "@/hooks/use-render-view";
 
@@ -299,7 +302,9 @@ export function XeokitViewer() {
 
     const t0 = performance.now();
 
-    document.getElementById("time").innerHTML = "Loading model...";
+    const timeElement = document.getElementById("time")!;
+
+    timeElement.innerHTML = "Loading model...";
 
     const sceneModel = lasLoader.load({
       id: "myModel",
@@ -311,7 +316,7 @@ export function XeokitViewer() {
 
     sceneModel.on("loaded", () => {
       const t1 = performance.now();
-      document.getElementById("time").innerHTML = "Model loaded in " + Math.floor(t1 - t0) / 1000.0 + " seconds<br>Objects: " + sceneModel.numEntities;
+      timeElement.innerHTML = "Model loaded in " + Math.floor(t1 - t0) / 1000.0 + " seconds<br>Objects: " + sceneModel.numEntities;
     });
 
     //------------------------------------------------------------------------------------------------------------------

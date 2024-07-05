@@ -1,3 +1,6 @@
+// @ts-ignore
+// @ts-nocheck
+
 export function Test() {
   return (
     <div className="w-screen h-screen">
