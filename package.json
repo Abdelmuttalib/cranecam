@@ -33,11 +33,13 @@
     "lucide-react": "^0.396.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.24.1",
     "swr": "^2.2.5",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.166.1",
     "vite-plugin-require": "^1.1.14",
+    "web-ifc": "^0.0.55",
     "web-ifc-three": "^0.0.126"
   },
   "devDependencies": {

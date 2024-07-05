@@ -29,9 +29,10 @@ export default function PointcloudNavigator({
 
   useEffect(() => {
     // initialize Potree viewer
-    console.log('viewerElem', viewerElem);
 
     const viewerElem = potreeContainerDiv.current;
+
+    console.log('viewerElem', viewerElem);
 
     const viewer = new Potree.Viewer(viewerElem);
 
@@ -87,39 +88,70 @@ export default function PointcloudNavigator({
     let relevantPosition = {};
 
     // Load and add point cloud to scene
-    // const url = pointCloudUrl;
+    const url = './demo/cloud.js';
     // "https://raw.githubusercontent.com/potree/potree/develop/pointclouds/lion_takanawa/cloud.js";
-    // Potree.loadPointCloud(pointCloudUrl).then(
-    //   (e) => {
-    //     // const scene = viewer.scene;
-    //     const pointcloud = e.pointcloud;
-    //     const material = pointcloud.material;
-    //     console.log("Material: ", pointcloud);
+    Potree.loadPointCloud(pointCloudUrl, "sigeom.sa").then(
+      (e) => {
+        // const scene = viewer.scene;
+        const pointcloud = e.pointcloud;
+        const material = pointcloud.material;
+        console.log("Material: ", pointcloud);
 
-    //     material.activeAttributeName = "rgba";
-    //     material.minSize = 2;
-    //     material.pointSizeType = Potree.PointSizeType.FIXED;
+        relevantPosition = pointcloud.position;
+        material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
+        material.shape = Potree.PointShape.SQUARE;
 
-    //     viewer.scene.addPointCloud(pointcloud);
-    //     console.log("viewer scene: ", viewer.scene);
-    //     if (viewer.scene.pointclouds?.[0]?.position) {
-    //       relevantPosition = viewer.scene.pointclouds?.[0]?.position;
-    //     }
+        material.activeAttributeName = "rgba";
+        material.size = 1;
+        // material.minSize = 2;
+        // material.pointSizeType = Potree.PointSizeType.FIXED;
 
-    //     viewer.fitToScreen();
-    //     // addMeasurementTool(viewer);
+        viewer.scene.addPointCloud(pointcloud);
+        console.log("viewer scene: ", viewer.scene);
+        if (viewer.scene.pointclouds?.[0]?.position) {
+          relevantPosition = viewer.scene.pointclouds?.[0]?.position;
+        }
 
-    //     // console.log("This is the url", pointCloudUrl);
-    //   },
-    //   (e) => console.err("ERROR: ", e)
-    // );
+        viewer.fitToScreen();
+        // viewer.scene.view.setView(
+        //   [589974.341, 231698.397, 986.146],
+        //   [589851.587, 231428.213, 715.634],
+        // );
+        // addMeasurementTool(viewer);
 
-    const ifcModelPath = '../../public/Project1.ifc';
+        // console.log("This is the url", pointCloudUrl);
+      },
+      (e) => console.err("ERROR: ", e)
+    );
+
+    const dd = {
+      "x": -17.64,
+      "y": -4.16,
+      "z": -7.5
+    };
+    // const ifcModelPath = '../../public/Project1.ifc';
+    const ifcModelPath = './demo/Project1.ifc';
     const ifcLoader = new IFCLoader();
-    // ifcLoader.ifcManager.setWasmPath('./libs/three.js/extra/ifc/');
-    ifcLoader.ifcManager.setWasmPath('../../public/libs/three.js/extra/ifc/');
-    ifcLoader.load(ifcModelPath, function (model) {
-      console.log("model: ", model);
+    console.log("laoder, ", ifcLoader);
+    ifcLoader.ifcManager.setWasmPath('./libs/three.js/extra/ifc/');
+    ifcLoader.load('./demo/Project1.ifc', function (model) {
+      // model.position.set(dd.x, dd.y, dd.z);
+
+      model.traverse(function (child) {
+        if (child.isMesh) {
+          child.material = new THREE.MeshPhongMaterial({ color: 0xffff12 }); // Example material
+        }
+      });
+
+      // Add directional light to the scene
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+      directionalLight.position.set(1, 1, 1).normalize();
+      viewer.scene.scene.add(directionalLight);
+
+      // Add ambient light to the scene
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Soft white light
+      viewer.scene.scene.add(ambientLight);
+
       // const pointCloud = viewer.scene.pointclouds[0]; // Adjust as per your viewer setup
       // const pointCloudBoundingBox = pointCloud.pcoGeometry.tightBoundingBox;
 
@@ -133,9 +165,18 @@ export default function PointcloudNavigator({
       // model.mesh.rotateX(Math.PI * 0.5);
       // model.scale.multiplyScalar(0.3048);
       // scene.add(model.mesh);
+      model.mesh.rotateX(Math.PI * 0.5);
+      // model.scale.multiplyScalar(0.3048);
+      model.scale.multiplyScalar(0.3048);
       console.log("S", viewer.scene);
+      viewer.scene.scene.add(model.mesh);
+      console.log("S123", viewer.scene.scene);
       // viewer.scene.add(model.mesh);
       // viewer.scene.scene.add(model.mesh);
+    }, (e) => {
+      console.log("Progress: ", e);
+    }, (e) => {
+      console.log("Error: ", e);
     });
 
     // const ifcLoader = new IFCLoader();
@@ -279,10 +320,9 @@ export default function PointcloudNavigator({
 
         <div className="potree_container bg-black flex h-full flex-col relative">
           <div id="potree_render_area" ref={potreeContainerDiv}></div>
-          <div className="absolute bg-zinc-900/90 rounded-full overflow-hidden py-0.5 flex flex-col gap-x-1 top-4 right-[25rem] z-20">
+          {/* <div className="absolute bg-zinc-900/90 rounded-full overflow-hidden py-0.5 flex flex-col gap-x-1 top-4 right-[25rem] z-20">
             <Button
-              title="Capture Screenshot"
-              onClick={captureScreenshot}
+              title="Select"
               // className="bg-blue-500 text-white"
               size="icon"
               className="bg-transparent"
@@ -373,18 +413,10 @@ export default function PointcloudNavigator({
                 <path d="M12 2a6.995 6.995 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a6.993 6.993 0 0 0-7-7Zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"></path>
               </svg>
             </Button>
-            {/* <Button
-              title="Zoom Out"
-              onClick={zoomOut}
-              // className="bg-blue-500 text-white"
-              size="icon"
-            >
-              <svg width="100%" height="100%" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fit="" preserveAspectRatio="xMidYMid meet" focusable="false"><path d="M19.5 9.05a9 9 0 1 0 0 5.9 3 3 0 0 0 0-5.9ZM19 13a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm-8 6a7 7 0 1 1 6.5-9.58 3 3 0 0 0 0 5.16A7 7 0 0 1 11 19Z"></path></svg>
-            </Button> */}
-          </div>
+          </div> */}
           {/* right */}
           <div className="absolute flex gap-x-1 top-0 h-full w-96 bottom-0 right-0 z-20 ">
-            <div className="bg-zinc-900/90 text-white space-y-3 p-4 py-5 w-full">
+            {/* <div className="bg-zinc-900/90 text-white space-y-3 p-4 py-5 w-full">
               <div className="flex items-center gap-x-2">
                 <svg
                   width="100%"
@@ -401,14 +433,35 @@ export default function PointcloudNavigator({
                 </svg>
                 <span className="text-lg font-medium">Add Annotation</span>
               </div>
-              {/* annotation */}
               <div className="space-y-3 py-3 px-1">
                 <Card />
               </div>
-            </div>
+            </div> */}
+            {/* <div className="bg-zinc-900/90 text-white space-y-3 p-4 py-5 w-full">
+              <div className="flex w-full max-w-72 text-center flex-col items-center gap-4 text-white mt-72 ml-6">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="44"
+                  height="44"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  className="lucide lucide-mouse-pointer rotate-12"
+                >
+                  <path d="m3 3 7.07 16.97 2.51-7.39 7.39-2.51L3 3z" />
+                  <path d="m13 13 6 6" />
+                </svg>
+                <p className="text-sm">
+                  Select an object to view its properties or modify it.
+                </p>
+              </div>
+            </div> */}
           </div>
           {/* left */}
-          <div className="absolute flex gap-x-1 top-0 h-full w-72 bottom-0 left-0 z-20 ">
+          {/* <div className="absolute flex gap-x-1 top-0 h-full w-72 bottom-0 left-0 z-20 ">
             <div className="bg-zinc-900/90 text-white space-y-3 p-4 w-full">
               <div className="flex items-center gap-x-2">
                 <svg
@@ -426,7 +479,6 @@ export default function PointcloudNavigator({
                 </svg>
                 <span className="text-lg">Layers</span>
               </div>
-              {/* annotation */}
               <div className="space-y-3 py-6 px-1">
                 <div className="flex items-center gap-x-2 text-zinc-200">
                   <input type="checkbox" className="w-6 h-6" />
@@ -483,15 +535,17 @@ export default function PointcloudNavigator({
                 </div>
               </div>
             </div>
-          </div>
-          <div className="absolute rounded flex gap-x-1 bottom-4 left-80 z-20">
+          </div> */}
+          {/* left-80 */}
+          <div className="absolute rounded flex gap-x-1 bottom-4 left-4 z-20">
             <div className="bg-blue-400/40 text-white p-1 rounded-lg">
               <span>3D</span>
             </div>
           </div>
           {/* actions */}
+          {/* left-[23rem] */}
           {!disableActions ? (
-            <div className="absolute bg-zinc-900/90 rounded-full overflow-hidden px-1 flex gap-x-1 bottom-4 left-[23rem] z-20">
+            <div className="absolute bg-zinc-900/90 rounded-full overflow-hidden px-1 flex gap-x-1 bottom-4 left-14 z-20">
               <Button
                 title="Capture Screenshot"
                 onClick={captureScreenshot}
@@ -514,7 +568,7 @@ export default function PointcloudNavigator({
                   <path d="M20 5h-3.17L15 3H9L7.17 5H4a2.006 2.006 0 0 0-2 2v12a2.006 2.006 0 0 0 2 2h16a2.006 2.006 0 0 0 2-2V7a2.006 2.006 0 0 0-2-2Zm-8 13a5 5 0 1 1 0-9.999A5 5 0 0 1 12 18Z"></path>
                 </svg>
               </Button>
-              <Button
+              {/* <Button
                 title="Capture Screenshot"
                 onClick={captureScreenshot}
                 // className="bg-blue-500 text-white"
@@ -535,7 +589,7 @@ export default function PointcloudNavigator({
                   <path d="M8 2 5.836 7h4.328L8 2Z"></path>
                   <path d="M10.597 8h-1.09l1.931 4.46-3.052-1.277L8 11.021l-.386.162-3.052 1.277L6.493 8h-1.09L3 13.552l.473.448L8 12.105 12.527 14l.473-.448L10.597 8Z"></path>
                 </svg>
-              </Button>
+              </Button> */}
 
               <Button
                 title="Zoom In"

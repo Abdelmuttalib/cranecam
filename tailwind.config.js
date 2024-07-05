@@ -4,10 +4,10 @@ export default {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
-    "./public/libs/potree/**/*.html",
-    "./public/libs/potree/**/*.js",
+    "./libs/potree/**/*.html",
+    "./libs/potree/**/*.js",
   ],
-  darkMode: false,
+  darkMode: "class",
   theme: {
     container: {
       center: true,

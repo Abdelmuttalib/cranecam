@@ -15,17 +15,17 @@ export default function DataView({ data }: DataViewProps) {
   return (
     <RenderViewProvider data={data}>
       <div className="relative w-full h-full min-h-screen flex flex-col">
-        <div className="w-full bg-zinc-950 text-gray-100 font-semibold flex flex-col items-center justify-center">
+        {/* <div className="w-full bg-zinc-950 text-gray-100 font-semibold flex flex-col items-center justify-center">
           <Navbar />
           <DateTimeline />
-        </div>
+        </div> */}
         <Viewer />
       </div>
     </RenderViewProvider>
   );
 }
 
-function Navbar() {
+export function Navbar() {
   const { selectedDate } = useRenderView();
 
   return (

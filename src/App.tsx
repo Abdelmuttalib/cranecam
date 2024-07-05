@@ -10,10 +10,10 @@ import { Test } from "./components/test";
 function App() {
   const { data } = useSWR(apiPaths.getPotreeDate, getPotreeDate);
 
-  // console.log(data);
+  console.log(data);
 
   return (
-    <div className="w-full min-h-screen bg-zinc-950">
+    <div className="w-full min-h-screen">
       {data && <DataView data={data} />}
       {/* <Xeokit /> */}
       {/* <Test /> */}
