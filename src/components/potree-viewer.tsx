@@ -139,7 +139,7 @@ export default function PointcloudNavigator({
 
       model.traverse(function (child) {
         if (child.isMesh) {
-          child.material = new THREE.MeshPhongMaterial({ color: 0xffff12 }); // Example material
+          child.material = new THREE.MeshPhongMaterial({ color: 0xffffff }); // Example material
         }
       });
 

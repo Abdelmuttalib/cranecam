@@ -42,7 +42,7 @@ export function DateTimeline() {
               className="w-full justify-center items-center flex flex-col"
               style={{ flex: `1 1 ${percentageWidth}%` }}
             >
-             
+
               {/* Dates in the month */}
               <div className="flex justify-evenly w-full">
                 {datesInMonth.map((dateObj) => {
@@ -85,11 +85,11 @@ export function DateTimeline() {
                 })}
               </div>
 
-               {/* Month */}
-               <div className="h-6 w-full flex items-center text-zinc-300 border-t border-t-zinc-700 bg-zinc-900/60 text-xs font-normal justify-center space-x-1">
-               <CalendarIcon />
+              {/* Month */}
+              <div className="h-6 w-full flex items-center text-zinc-300 border-t border-t-zinc-700 bg-zinc-900/60 text-xs font-normal justify-center space-x-1">
+                <CalendarIcon />
                 <span>
-                {month}
+                  {month}
                 </span>
               </div>
 
@@ -142,7 +142,7 @@ export function DateTimeline() {
           );
         })} */}
       </div>
-      <div className="flex justify-center border-t border-l border-zinc-700 items-center px-3 bg-zinc-900">
+      {/* <div className="flex justify-center border-t border-l border-zinc-700 items-center px-3 bg-zinc-900">
         <Button
           // onClick={onCompare}
           className="rounded-full bg-blue-500 space-x-1"
@@ -150,7 +150,7 @@ export function DateTimeline() {
           <CompareIcon className="w-5 h-5" />
           <span>Compare</span>
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 }
