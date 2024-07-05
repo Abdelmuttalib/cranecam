@@ -130,54 +130,54 @@ export default function PointcloudNavigator({
       "z": -7.5
     };
     // const ifcModelPath = '../../public/Project1.ifc';
-    const ifcModelPath = './demo/Project1.ifc';
-    const ifcLoader = new IFCLoader();
-    console.log("laoder, ", ifcLoader);
-    ifcLoader.ifcManager.setWasmPath('./libs/three.js/extra/ifc/');
-    ifcLoader.load('./demo/Project1.ifc', function (model) {
-      // model.position.set(dd.x, dd.y, dd.z);
+    // const ifcModelPath = './demo/Project1.ifc';
+    // const ifcLoader = new IFCLoader();
+    // console.log("laoder, ", ifcLoader);
+    // ifcLoader.ifcManager.setWasmPath('./libs/three.js/extra/ifc/');
+    // ifcLoader.load('./demo/Project1.ifc', function (model) {
+    //   // model.position.set(dd.x, dd.y, dd.z);
 
-      model.traverse(function (child) {
-        if (child.isMesh) {
-          child.material = new THREE.MeshPhongMaterial({ color: 0xffffff }); // Example material
-        }
-      });
+    //   model.traverse(function (child) {
+    //     if (child.isMesh) {
+    //       child.material = new THREE.MeshPhongMaterial({ color: 0xffffff }); // Example material
+    //     }
+    //   });
 
-      // Add directional light to the scene
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-      directionalLight.position.set(1, 1, 1).normalize();
-      viewer.scene.scene.add(directionalLight);
+    //   // Add directional light to the scene
+    //   const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    //   directionalLight.position.set(1, 1, 1).normalize();
+    //   viewer.scene.scene.add(directionalLight);
 
-      // Add ambient light to the scene
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Soft white light
-      viewer.scene.scene.add(ambientLight);
+    //   // Add ambient light to the scene
+    //   const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Soft white light
+    //   viewer.scene.scene.add(ambientLight);
 
-      // const pointCloud = viewer.scene.pointclouds[0]; // Adjust as per your viewer setup
-      // const pointCloudBoundingBox = pointCloud.pcoGeometry.tightBoundingBox;
+    //   // const pointCloud = viewer.scene.pointclouds[0]; // Adjust as per your viewer setup
+    //   // const pointCloudBoundingBox = pointCloud.pcoGeometry.tightBoundingBox;
 
-      // Calculate the center of the point cloud bounding box
-      // const pointCloudCenter = pointCloudBoundingBox.getCenter(new THREE.Vector3());
+    //   // Calculate the center of the point cloud bounding box
+    //   // const pointCloudCenter = pointCloudBoundingBox.getCenter(new THREE.Vector3());
 
-      // Set the position of the IFC model relative to the point cloud
-      // ifcModel.mesh.position.copy(pointCloudCenter);
-      // ifcModel.mesh.position.x += pointCloudBoundingBox.max.x - pointCloudCenter.x + 1; // Example offset adjustment
-      // model.position = { x: 100, y: 100, z: 100, isVector: false };
-      // model.mesh.rotateX(Math.PI * 0.5);
-      // model.scale.multiplyScalar(0.3048);
-      // scene.add(model.mesh);
-      model.mesh.rotateX(Math.PI * 0.5);
-      // model.scale.multiplyScalar(0.3048);
-      model.scale.multiplyScalar(0.3048);
-      console.log("S", viewer.scene);
-      viewer.scene.scene.add(model.mesh);
-      console.log("S123", viewer.scene.scene);
-      // viewer.scene.add(model.mesh);
-      // viewer.scene.scene.add(model.mesh);
-    }, (e) => {
-      console.log("Progress: ", e);
-    }, (e) => {
-      console.log("Error: ", e);
-    });
+    //   // Set the position of the IFC model relative to the point cloud
+    //   // ifcModel.mesh.position.copy(pointCloudCenter);
+    //   // ifcModel.mesh.position.x += pointCloudBoundingBox.max.x - pointCloudCenter.x + 1; // Example offset adjustment
+    //   // model.position = { x: 100, y: 100, z: 100, isVector: false };
+    //   // model.mesh.rotateX(Math.PI * 0.5);
+    //   // model.scale.multiplyScalar(0.3048);
+    //   // scene.add(model.mesh);
+    //   model.mesh.rotateX(Math.PI * 0.5);
+    //   // model.scale.multiplyScalar(0.3048);
+    //   model.scale.multiplyScalar(0.3048);
+    //   console.log("S", viewer.scene);
+    //   viewer.scene.scene.add(model.mesh);
+    //   console.log("S123", viewer.scene.scene);
+    //   // viewer.scene.add(model.mesh);
+    //   // viewer.scene.scene.add(model.mesh);
+    // }, (e) => {
+    //   console.log("Progress: ", e);
+    // }, (e) => {
+    //   console.log("Error: ", e);
+    // });
 
     // const ifcLoader = new IFCLoader();
     // ifcLoader.ifcManager.setWasmPath('./libs/three.js/extra/ifc/');
