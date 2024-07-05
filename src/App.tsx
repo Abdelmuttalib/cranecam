@@ -1,8 +1,6 @@
-import * as React from 'react';
 import useSWR from "swr";
 import { apiPaths, getPotreeDate } from "./lib/api";
 import DataView from "./components/data-viewer";
-import { Test } from "./components/test";
 
 // #242424
 // #131f22
