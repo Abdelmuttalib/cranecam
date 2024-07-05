@@ -304,8 +304,8 @@ export function XeokitViewer() {
     const sceneModel = lasLoader.load({
       id: "myModel",
       // src: "./indoor.laz",
-      // src: "Nalls_Pumpkin_Hill.laz",
-      src: "http://47.97.51.98:6093/temp/2024-04-28/J72304752/dense/meshed-poisson.las",
+      src: "Nalls_Pumpkin_Hill.laz",
+      // src: "http://47.97.51.98:6093/temp/2024-04-28/J72304752/dense/meshed-poisson.las",
       rotation: [-90, 0, 0]
     });
 
